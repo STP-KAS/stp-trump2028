@@ -7,6 +7,21 @@ export const STORAGE_C = 1_000_000_000_000n;
 export const BLOCK_MASS = 500_000n;
 export const SOMPI_PER_KAS = 100_000_000n;
 
+// rusty-kaspa pay_to_script_hash: OpBlake2b, OpData32, 32 hash bytes, OpEqual.
+export const P2SH_SCRIPT_LEN = 35n;
+export const UTXO_CONST_BYTES = 63n;
+export const COVENANT_ID_BYTES = 32n;
+export const UTXO_UNIT = 100n;
+
+export function plurality(scriptLen, hasCovenantId) {
+  const extra = hasCovenantId ? COVENANT_ID_BYTES : 0n;
+  const bytes = UTXO_CONST_BYTES + scriptLen + extra;
+  return (bytes + UTXO_UNIT - 1n) / UTXO_UNIT;
+}
+
+// A covenant actor output is a P2SH script plus a covenant id.
+export const COVENANT_PLURALITY = plurality(P2SH_SCRIPT_LEN, true);
+
 function cell(amount, plurality = 1n) {
   if (amount <= 0n) {
     throw new Error("amount");
@@ -64,17 +79,25 @@ export function storageMass(inputs, outputs, storm = STORAGE_C) {
 
 // A public-mint transaction keeps the minter deposit and adds a token carrier.
 // The fee is input sompi minus output sompi. It is not taken from the deposit.
-export function mintShape({ deposit, caller, carrier, fee }) {
+export function mintShape({ deposit, caller, carrier, fee, covenantPlurality = 1n }) {
   const change = caller - carrier - fee;
   if (change <= 0n) {
     throw new Error("change");
   }
-  const inputs = asCells([deposit, caller]);
-  const outputs = asCells([deposit, carrier, change]);
+  const inputs = [
+    cell(deposit, covenantPlurality),
+    cell(caller, 1n),
+  ];
+  const outputs = [
+    cell(deposit, covenantPlurality),
+    cell(carrier, covenantPlurality),
+    cell(change, 1n),
+  ];
   return {
     inputs,
     outputs,
     fee,
     grams: storageMass(inputs, outputs),
+    change,
   };
 }

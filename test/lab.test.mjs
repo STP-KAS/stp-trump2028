@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { storageMass, asCells, BLOCK_MASS } from "../src/mass.mjs";
+import { storageMass, asCells, BLOCK_MASS, COVENANT_PLURALITY, P2SH_SCRIPT_LEN, plurality, mintShape, SOMPI_PER_KAS } from "../src/mass.mjs";
 import {
   ADDRESS_COUNT,
   EXTENSION,
+  I64_MAX,
   MINT_LIMIT,
   SUPPLY,
   TOKEN_NAME,
@@ -11,12 +12,13 @@ import {
   fail,
   genesis,
   mint,
-  reclaimAllowed,
+  reclaim,
   recipientFor,
   split,
   splitToLeaves,
 } from "../src/mint.mjs";
 import { pack, report, shapes } from "../src/storm.mjs";
+import { firstPickCounts, weight, weightShare } from "../src/sample.mjs";
 
 test("the name commits with unkeyed BLAKE3", async () => {
   const { blake3 } = await import("@noble/hashes/blake3");
@@ -67,9 +69,12 @@ test("split keeps at most half and conserves the allowance", () => {
   assert.equal(parts.retained.mintAmount, MINT_LIMIT);
 });
 
-test("the deposit returns only after the allowance is zero", () => {
-  assert.equal(reclaimAllowed(genesis()), false);
-  assert.equal(reclaimAllowed({ remaining: 0n }), true);
+test("the deposit returns only at zero and only to its owner", () => {
+  const root = genesis();
+  assert.throws(() => reclaim(root, root.owner), (error) => error.reason === "remaining");
+  const empty = { ...root, remaining: 0n };
+  assert.throws(() => reclaim(empty, "other"), (error) => error.reason === "owner");
+  assert.equal(reclaim(empty, root.owner).released, root.kas);
 });
 
 test("150 leaves each mint once and the supply is exhausted", () => {
@@ -88,7 +93,7 @@ test("150 leaves each mint once and the supply is exhausted", () => {
     assert.equal(before.remaining, MINT_LIMIT);
     const after = mint(before, recipientFor(callers[index].name));
     assert.equal(after.remaining, 0n);
-    assert.equal(reclaimAllowed(after), true);
+    assert.equal(reclaim(after, after.owner).released, after.kas);
     issued += MINT_LIMIT;
   }
   assert.equal(issued, SUPPLY);
@@ -109,11 +114,53 @@ test("storage mass matches the consensus integer formula", () => {
   assert.equal(arithmetic, 170n);
 });
 
-test("the thin shape is heavier than a block's twentieth and the fat shape fits the swarm", () => {
+test("a covenant output has plurality 2 and a plurality of 4 does not fit", () => {
+  assert.equal(P2SH_SCRIPT_LEN, 35n);
+  assert.equal(plurality(P2SH_SCRIPT_LEN, false), 1n);
+  assert.equal(COVENANT_PLURALITY, 2n);
   const body = shapes();
-  assert.ok(body.thin.grams > 25_000n);
+  assert.equal(body.thin.grams, 232955n);
+  assert.equal(body.oneKas.grams, 73069n);
+  assert.equal(body.fat.grams, 653n);
   assert.ok(body.fat.grams * BigInt(ADDRESS_COUNT) < BLOCK_MASS);
+  const kas = SOMPI_PER_KAS;
+  const tooWide = mintShape({
+    deposit: kas,
+    caller: 10n * kas,
+    carrier: (2n * kas) / 10n,
+    fee: kas,
+    covenantPlurality: 4n,
+  });
+  assert.ok(tooWide.grams > BLOCK_MASS);
   assert.equal(100_000_000n / 25_000n, 4000n);
+});
+
+test("integer edges match the reference limits", () => {
+  const root = genesis();
+  const ceiling = { ...root, remaining: I64_MAX, mintAmount: I64_MAX };
+  assert.equal(mint(ceiling, recipientFor("mint-001", I64_MAX)).remaining, 0n);
+  assert.throws(
+    () => mint(ceiling, recipientFor("mint-001", I64_MAX + 1n)),
+    (error) => error.reason === "i64",
+  );
+  const one = { ...root, remaining: 1n };
+  assert.throws(() => split(one, 1n, { id: 1, owner: "x" }), (error) => error.reason === "half");
+  const scheme = { ...recipientFor("mint-001"), borrowScheme: 0x80 };
+  assert.throws(() => mint(root, scheme), (error) => error.reason === "borrow-scheme");
+});
+
+test("fee weight is the cube of the ratio, so the top mint is not certain", () => {
+  assert.equal(weight(50n) / weight(4n), 1953n);
+  const rows = [...addresses(), { index: -1, name: "ordinary", feeRatio: 4n }];
+  const shares = weightShare(rows);
+  const top = shares.find((row) => row.name === "mint-150");
+  const low = shares.find((row) => row.name === "mint-001");
+  const ordinary = shares.find((row) => row.name === "ordinary");
+  assert.ok(top.share < 0.05);
+  assert.ok(low.share > ordinary.share);
+  const counts = firstPickCounts(rows, 4000, 7);
+  assert.equal(counts.get("ordinary"), 0);
+  assert.ok(counts.get("mint-150") > counts.get("mint-001"));
 });
 
 test("higher fee ratio is mined first and a full block leaves the ordinary tx waiting", () => {
@@ -140,11 +187,11 @@ test("the storm report closes the supply and names the counterfactual", () => {
   assert.equal(result.mintAmountOneCounterfactual.hoursAt1Bps, "281.67");
   assert.equal(result.mintAmountOneCounterfactual.hoursAt10Bps, "28.17");
   assert.deepEqual(result.roundSizes, [1, 2, 4, 8, 16, 32, 64, 22]);
-  assert.equal(result.shapes.thinGrams, "57500");
-  assert.equal(result.shapes.oneKasGrams, "17614");
-  assert.equal(result.shapes.fatGrams, "153");
-  assert.equal(result.packs.thin.blocks, 19);
-  assert.equal(result.packs.oneKas.blocks, 6);
+  assert.equal(result.shapes.thinGrams, "232955");
+  assert.equal(result.shapes.oneKasGrams, "73069");
+  assert.equal(result.shapes.fatGrams, "653");
+  assert.equal(result.packs.thin.blocks, 76);
+  assert.equal(result.packs.oneKas.blocks, 26);
   assert.equal(result.packs.fat.blocks, 1);
   assert.equal(fail("marker").reason, "marker");
 });

@@ -4,6 +4,7 @@ export const TOKEN_NAME = "stp trump2028";
 export const SUPPLY = 20_280_000n;
 export const MINT_LIMIT = 135_200n;
 export const ADDRESS_COUNT = 150;
+export const I64_MAX = 9223372036854775807n;
 export const EXTENSION = commitment(TOKEN_NAME);
 
 const OWNER_SCHEMES = new Set([0x00, 0x01, 0x02, 0x03, 0x04]);
@@ -26,7 +27,14 @@ export function genesis() {
   };
 }
 
+function fitsI64(value) {
+  return value >= 0n && value <= I64_MAX;
+}
+
 function checkRecipient(minter, recipient) {
+  if (!fitsI64(recipient.amount) || !fitsI64(minter.remaining) || !fitsI64(minter.mintAmount)) {
+    throw fail("i64");
+  }
   if (recipient.amount <= 0n) {
     throw fail("amount");
   }
@@ -62,6 +70,9 @@ export function mint(minter, recipient) {
 
 // PublicMint.split: take is at most half, integer division, and at least 1.
 export function split(minter, take, child) {
+  if (!fitsI64(take) || !fitsI64(minter.remaining)) {
+    throw fail("i64");
+  }
   if (take <= 0n) {
     throw fail("take");
   }
@@ -79,8 +90,14 @@ export function split(minter, take, child) {
   };
 }
 
-export function reclaimAllowed(minter) {
-  return minter.remaining === 0n;
+export function reclaim(minter, signer) {
+  if (minter.remaining !== 0n) {
+    throw fail("remaining");
+  }
+  if (signer !== minter.owner) {
+    throw fail("owner");
+  }
+  return { released: minter.kas };
 }
 
 export function recipientFor(owner, amount = MINT_LIMIT) {

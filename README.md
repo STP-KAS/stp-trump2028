@@ -33,7 +33,7 @@ The knob on a KCC public mint is the per-mint limit, plus how small the KAS outp
 
 ## How
 
-The rules below are the reference rules, run in `src/mint.mjs`. This is not the Argent virtual machine. Eleven tests check them. `npm test` reruns the checks. `npm run storm` prints the numbers.
+The rules below are the reference rules, run in `src/mint.mjs`. This is not the Argent virtual machine. Thirteen tests check the model. `npm test` reruns them. `npm run storm` prints the numbers. The Argent run and the KUSDT redeem run are in [RESULTS.md](RESULTS.md).
 
 Genesis is one minter. `remaining` is 20,280,000. `mint_amount` is 135,200. The extension commitment is unkeyed BLAKE3 of the UTF-8 bytes `stp trump2028`:
 
@@ -53,45 +53,47 @@ The 150 callers are labels `mint-001` through `mint-150`. They are not Kaspa add
 
 Storage mass uses the integer formula in rusty-kaspa `calc_storage_mass`, with `C = 10^12`. Plurality is 1 in these shapes. The node charges the greater of compute mass and storage mass. Compute mass for a real covenant script was not measured here.
 
+A covenant output is a 35-byte pay-to-script-hash plus a covenant id. Its storage plurality is 2. The rows below use that plurality. A plurality of 4 on the same thin shape weighs 938,411 grams, which is over one block.
+
 | Shape | KAS on the new token output | Storage mass | Fits in one 500,000-gram block | Blocks for 150 mints plus the ordinary tx |
 | --- | --- | ---: | ---: | ---: |
-| Thin, 0.2 KAS output, 1 KAS fee | 0.2 | 57,500 | 8 | 19 |
-| One KAS output, 1 KAS fee | 1 | 17,614 | 28 | 6 |
-| Fat, 100 KAS output | 100 | 153 | 3,267 | 1 |
+| Thin, 0.2 KAS output, 1 KAS fee | 0.2 | 232,955 | 2 | 76 |
+| One KAS output, 1 KAS fee | 1 | 73,069 | 6 | 26 |
+| Fat, 100 KAS output | 100 | 653 | 765 | 1 |
 | Cited KRC-20 beta mass |  | 25,000 | 20 | 8 |
 | Plain 1-in-1-out compute mass |  | 1,624 | 307 | 1 |
 
-The thin inputs are a 1 KAS minter deposit and a 10 KAS caller input. The outputs are the 1 KAS deposit, a 0.2 KAS carrier, and 8.8 KAS change, with a 1 KAS fee. `mint-150` at 3,775 sompi/gram is first. On the thin shape the ordinary 4 sompi/gram transaction is not in the first block. On the fat shape the whole swarm and the ordinary transaction fit in one block.
+The thin inputs are a 1 KAS minter deposit and a 10 KAS caller input. The outputs are the 1 KAS deposit, a 0.2 KAS carrier, and 8.8 KAS change, with a 1 KAS fee. The deposit and the carrier are covenant outputs. The caller input and the change are ordinary outputs. `mint-150` ranks first in a strict sort. On the thin shape the ordinary 4 sompi/gram transaction is not in the first block. On the fat shape the whole swarm and the ordinary transaction fit in one block. At 10 blocks per second the thin packing is 76 blocks, 7.6 seconds.
+
+The node does not use that strict sort. Its mempool weight is the fee ratio cubed. `mint-150` at 3,775 carries about 2.6 percent of the swarm's weight, so it is not certain to be drawn first. A ratio of 50 weighs 1,953 times a ratio of 4. In 4,000 draws the ordinary transaction was drawn first zero times.
 
 One unsplit minter can be spent once. One hundred and fifty callers racing that single output confirm across 150 blocks. At 10 blocks per second that is 15 seconds. The losers conflict with the winner. They do not all add mass in the same block. This lab does not model how a node stores those losers.
 
 The wide storm is the other setting of the same supply. If the per-mint limit is 1, the supply is 20,280,000 transactions. At the cited 25,000 grams, 20 fit in a block. That is 281.67 hours at 1 block per second, and 28.17 hours at 10 blocks per second, if every block is full of those mints. The 2024 backlog of about 37,000 transactions, at about 20 per block and 1 block per second, is 1,850 blocks. That is about 31 minutes of full blocks before counting the mints that kept arriving.
 
-This token is aimed at the small side of that range: 149 splits and 150 mints. With thin outputs the packing is 19 blocks, under two seconds at 10 blocks per second. The congestion in a later meme wave would come from a small per-mint limit, thin KAS outputs, and fee ratios above ordinary traffic.
+This token is aimed at the small side of that range: 149 splits and 150 mints. With thin covenant outputs the packing is 76 blocks, 7.6 seconds at 10 blocks per second. The congestion in a later meme wave would come from a small per-mint limit, thin KAS outputs, and fee ratios above ordinary traffic.
 
 ## Conclusion
 
-`stp trump2028` can be minted under the rules in the open reference, on this machine, with a hard supply of 20,280,000. It cannot be minted on Kaspa today. KCC-20 is Draft, the mint chapter is not in that Draft, and the reference master branch does not contain the app.
+`stp trump2028` mints under the reference rules on this machine, with a hard supply of 20,280,000. The Argent suite at `8c8dc8ee` passed 54 tests, and its mint example walked an allowance from 25 down to 0. It still cannot be minted on Kaspa today. KCC-20 is Draft, the mint chapter is not in that Draft, and the reference master branch does not contain the app. No transaction was sent to a node.
 
-A meme is this shape: a name, a cap, and a crowd of callers. A utility still needs an entrypoint that reads the extension. A stable still needs a redeem that pays KAS back. Those are two further programs.
+A meme is this shape: a name, a cap, and a crowd of callers. A utility still needs an entrypoint that reads the extension. A stable is a separate redeem. The KUSDT lock paid the full sompi back to the holder and kept the fee on a second input. Six engine tests and five guest tests passed.
 
-One hundred and fifty thin mints are a few seconds at 10 blocks per second. They are not the 2024 backlog. The backlog comes back if the per-mint limit is small and each mint carries a thin KAS output at a fee ratio above ordinary traffic. One shared minter does the opposite: the callers conflict, and only one mint confirms per block.
+One hundred and fifty thin covenant mints are 7.6 seconds at 10 blocks per second. They are not the 2024 backlog. The backlog comes back if the per-mint limit is small and each mint carries a thin KAS output at a fee ratio above ordinary traffic. One shared minter does the opposite: the callers conflict, and only one mint confirms per block.
 
-The mass table uses plurality 1 and ignores covenant script size. A compiled script can be heavier than every row here. Until that script is measured, the table is a model.
+The measured script public key is 35 bytes. With the covenant id, storage plurality is 2, and that is the mass table above. The compiled bytecode is longer than the script public key because the redeem script is revealed on spend. It does not sit in the output. A plurality of 4 would make one thin mint heavier than a block. This artifact is not that heavy.
 
-## What I would test
+## What was tested
 
-These eleven checks already pass in `test/lab.test.mjs`: the name hash, the supply cap, mint rejections, the half split, reclaim only at zero, 150 distinct fee ratios, one mint per leaf, storage-mass arithmetic, and fee-ratio packing.
+Details and the commands are in [RESULTS.md](RESULTS.md).
 
-The next tests, in the order that would change the conclusion:
-
-1. Run the reference itself. At `8c8dc8ee`, `cargo test --locked --all-targets` and `cargo run --locked --bin kcc20 -- mint`. A pass means the Argent machine agrees with this write-up. This folder would then stay a packing model.
-2. Compile `public_mint.ag` and measure the script public key. Plurality is the storage bytes divided into 100-byte units, and the covenant id adds 32 bytes. Plurality is squared in the mass formula. A plurality of 4 or more can push one thin output over the 500,000-gram block. That measurement replaces the table.
-3. Submit one covenant transaction to a local Testnet-10 node: one genesis minter, one mint, and a second mint of the same output. The node should accept the first, reject an over-mint, and confirm only one spend. Public mempools stay out of it. One hundred and fifty submissions are a different experiment.
-4. Ask the node how it orders the 150 ratios. Selection is weighted by fee divided by mass. The strict sort in this lab is the ranking, not the sampler. The question is whether 50 sompi per gram still beats 4, and whether 3,775 always lands first.
-5. Walk the integer edges the reference names: a total at `2^63 - 1`, a half of 1, scheme byte `0x80`, and a reclaim signature that does not match the deposit owner.
-6. Run `TokenSeed`. It should create a zero-token receiver and should not increase supply. A borrowed receive can then pay into that receiver.
-7. A stable test is a separate program. Lock sompi, redeem the same sum to the holder, and pay the fee from another input. That is the KUSDT lock. It is not a setting of this mint.
+1. Reference suite at `8c8dc8ee`: `cargo test --locked --all-targets` passed 54 tests. `cargo run --locked --bin kcc20 -- mint` exited 0 and minted the example allowance down to zero. Those ids are virtual-machine ids.
+2. Script public key: 35 bytes, plurality 2. Compiled bytecode is 2,019 bytes for PublicMint, 4,031 for KCC20, and 1,355 for TokenSeed. Plurality 4 on the thin shape is 938,411 grams.
+3. No node submission. The example funds itself with a synthetic `OP_TRUE` output at a demo outpoint. gRPC `127.0.0.1:16210` and Borsh `17210` answered. JSON `18210` did not. Public mempools were not used.
+4. Mempool weight is `(fee / mass) ^ 3`. A ratio of 50 outweighs a ratio of 4 by 1,953 times. `mint-150` holds about 2.6 percent of the weight, so it does not always land first. In 4,000 seeded draws the ordinary transaction was never first.
+5. Integer edges in this model: `2^63 - 1` mints to zero, one more is rejected, a half of 1 is rejected, scheme byte `0x80` is rejected, and a reclaim by the wrong owner is rejected. The reference suite also accepts `i64::MAX` and rejects a reclaim by the wrong key.
+6. `TokenSeed` in the reference suite: a create of 1 token is rejected, a create of 0 is accepted, and a borrowed receive then pays into that receiver. The seed does not increase supply.
+7. KUSDT lock: full redeem, fee on the second input, and rejections for a skim, a wrong recipient, and a wrong key. The guest tag still refuses to be spent as gas.
 
 ## Run
 

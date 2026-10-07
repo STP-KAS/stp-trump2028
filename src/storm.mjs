@@ -1,5 +1,5 @@
 import { pathToFileURL } from "node:url";
-import { mintShape, BLOCK_MASS, SOMPI_PER_KAS } from "./mass.mjs";
+import { mintShape, BLOCK_MASS, SOMPI_PER_KAS, COVENANT_PLURALITY } from "./mass.mjs";
 import {
   ADDRESS_COUNT,
   MINT_LIMIT,
@@ -15,26 +15,26 @@ import {
 
 const KAS = SOMPI_PER_KAS;
 
+function shaped(carrier, deposit, caller) {
+  return mintShape({
+    deposit,
+    caller,
+    carrier,
+    fee: KAS,
+    covenantPlurality: COVENANT_PLURALITY,
+  });
+}
+
 export function shapes() {
   return {
-    thin: mintShape({
-      deposit: KAS,
-      caller: 10n * KAS,
-      carrier: (2n * KAS) / 10n,
-      fee: KAS,
-    }),
-    oneKas: mintShape({
-      deposit: KAS,
-      caller: 10n * KAS,
-      carrier: KAS,
-      fee: KAS,
-    }),
-    fat: mintShape({
-      deposit: 100n * KAS,
-      caller: 400n * KAS,
-      carrier: 100n * KAS,
-      fee: KAS,
-    }),
+    thin: shaped((2n * KAS) / 10n, KAS, 10n * KAS),
+    oneKas: shaped(KAS, KAS, 10n * KAS),
+    fat: shaped(100n * KAS, 100n * KAS, 400n * KAS),
+    plain: {
+      thin: mintShape({ deposit: KAS, caller: 10n * KAS, carrier: (2n * KAS) / 10n, fee: KAS }),
+      oneKas: mintShape({ deposit: KAS, caller: 10n * KAS, carrier: KAS, fee: KAS }),
+      fat: mintShape({ deposit: 100n * KAS, caller: 400n * KAS, carrier: 100n * KAS, fee: KAS }),
+    },
   };
 }
 
