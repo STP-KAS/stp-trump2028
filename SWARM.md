@@ -6,7 +6,7 @@
 
 The reference machine minted `stp trump2028`. One hundred and fifty callers. Limited supply. The run stayed on this machine.
 
-This is not a Kaspa transaction. The ids below are virtual-machine ids. Nothing was submitted to a node.
+This is not a Kaspa transaction. The ids below are virtual-machine ids. Nothing in this run was submitted to a node. The separate network mint is [LIVE.md](LIVE.md).
 
 ## Command
 

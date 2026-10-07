@@ -1,6 +1,6 @@
 # What was tested
 
-Run on 7 Oct 2026. No transaction was submitted. The reference checkout is commit `8c8dc8ee`. Rust was `rustc 1.97.1`.
+Run on 7 Oct 2026. The reference checkout is commit `8c8dc8ee`. Rust was `rustc 1.97.1`. Sections 1, 2, and 4 through 7 did not submit. Section 3 did: one local testnet-10 genesis and one mint.
 
 ## 1. The reference machine
 
@@ -42,15 +42,27 @@ Plurality is squared in the storage-mass term. The thin mint, with covenant plur
 
 The same thin shape at plurality 4 is 938,411 grams. That is more than one block. This artifact is plurality 2, so one thin mint still fits.
 
-Compute mass was not measured on a serialized transaction. The redeem script is carried in the signature script at 1 gram per byte, so the 2,019-byte PublicMint script is a few thousand compute grams. The thin storage mass is the larger number.
+Compute mass was not measured on a serialized transaction in this section. The redeem script is carried in the signature script at 1 gram per byte, so the 2,019-byte PublicMint script is a few thousand compute grams. The thin storage mass is the larger number in the model. The later network mint measured compute, transient, and storage on the real transactions. Those numbers are in [LIVE.md](LIVE.md).
 
 ## 3. A node submission
 
-Not sent.
+Sent once, on 7 Oct 2026, to the local testnet-10 node only. The node was rusty-kaspa 2.1.0 and reported itself synced. Borsh `127.0.0.1:17210` took the transactions. Public mempools were not used. The 150-caller run in [SWARM.md](SWARM.md) was not part of this submit.
 
-The reference mint spends a synthetic outpoint. Submitting that transaction would not be a covenant mint the node can accept. gRPC `127.0.0.1:16210` and Borsh `17210` accepted a TCP connection. JSON `18210` did not, so a fee-estimate call there failed. Public mempools were not used.
+The local faucet returned HTTP 429 and no coins. No existing wallet was spent. One coinbase from a block found on that same node paid a new testnet address. After it matured, genesis spent output index 1.
 
-The accept and reject checks that were actually executed are the virtual-machine ones: a normal mint is accepted, an over-mint is rejected, and a second spend has to use the reduced allowance.
+```text
+coinbase bab89fcacc78d64d18f1903fad17d7ca7fed2f29676c32d2803f7077463dbe11
+amount 706277464
+address kaspatest:qp7x6aaf0ph8cjx9jaq5k27llapww797j0lzn3u3e2kqqepl4nw45jye4ad3t
+```
+
+Genesis `44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056` was included in chain block `9ab38a7e011f58b30620b9087519d9ad1a427766cb58608fd46e680675984472` at 2026-10-07T15:36:25.967Z and accepted by chain block `dac4e684b1a35ab20960e07e06ed8d83b3a1e02ef23232eeedc2a43dbbf5ea8c`.
+
+Mint `1fd8391dacb6757f4df5f5a59ce60788c39d423f6613ae4a2f51602471e63ecc` took one lot of 135,200. It was included in block `883e9b5ba0e55007fed75198e8c834807cdd20313ac4671c3194a7c914723a3b` at 2026-10-07T15:36:26.323Z and accepted by chain block `1bb014758974b82fe7fb0bb97f117e8f52580d16e12d481c1482e267dcc521bd`.
+
+The second mint `f6979e31e11895d164750513484eabde3a9b4da7009e2d9d64c1d59a2332b5aa` was rejected. The node said output `(44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056, 0)` was already spent by the first mint in the mempool. It was not retried. It is not in a block.
+
+A later virtual-chain read from the parent of the genesis block listed both accepted ids and removed no blocks. Neither transaction was still in the mempool. Fee, mass, and output values are in [LIVE.md](LIVE.md).
 
 ## 4. How the node orders fee ratios
 

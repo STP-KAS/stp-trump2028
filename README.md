@@ -5,7 +5,7 @@
 
 # stp trump2028
 
-A local mint of a KCC-style token named `stp trump2028`. Supply is 20,280,000 base units. One mint may take at most 135,200. One hundred and fifty callers mint it, each at a different fee ratio. Nothing in this folder is submitted to a network.
+A local mint of a KCC-style token named `stp trump2028`. Supply is 20,280,000 base units. One mint may take at most 135,200. One hundred and fifty callers mint it in the model, each at a different fee ratio. The files in this folder do not connect to a node. One genesis and one mint were submitted separately to a local testnet-10 node. That result is [LIVE.md](LIVE.md).
 
 ## What
 
@@ -51,7 +51,7 @@ The reference also wants a `TokenSeed` in the genesis group, so later callers ca
 
 The 150 callers are labels `mint-001` through `mint-150`. They are not Kaspa addresses and they are not keys. Their fee ratios are 50, 75, 100, and so on up to 3,775 sompi per gram. All 150 ratios differ. An ordinary transaction at 4 sompi per gram is included in the packing.
 
-Storage mass uses the integer formula in rusty-kaspa `calc_storage_mass`, with `C = 10^12`. Plurality is 1 in these shapes. The node charges the greater of compute mass and storage mass. Compute mass for a real covenant script was not measured here.
+Storage mass uses the integer formula in rusty-kaspa `calc_storage_mass`, with `C = 10^12`. Plurality is 1 in these shapes. A version-1 relay fee uses the greater of compute mass and half the transient mass, rounded up. Storage mass is a separate commitment. The local testnet mint measured both, in [LIVE.md](LIVE.md).
 
 A covenant output is a 35-byte pay-to-script-hash plus a covenant id. Its storage plurality is 2. The rows below use that plurality. A plurality of 4 on the same thin shape weighs 938,411 grams, which is over one block.
 
@@ -75,7 +75,7 @@ This token is aimed at the small side of that range: 149 splits and 150 mints. W
 
 ## Conclusion
 
-`stp trump2028` mints under the reference rules on this machine, with a hard supply of 20,280,000. The Argent suite at `8c8dc8ee` passed 54 tests, and its mint example walked an allowance from 25 down to 0. It still cannot be minted on Kaspa today. KCC-20 is Draft, the mint chapter is not in that Draft, and the reference master branch does not contain the app. No transaction was sent to a node.
+`stp trump2028` mints under the reference rules on this machine, with a hard supply of 20,280,000. The Argent suite at `8c8dc8ee` passed 54 tests, and its mint example walked an allowance from 25 down to 0. KCC-20 is Draft, the mint chapter is not in that Draft, and the reference master branch does not contain the app. One genesis and one mint of 135,200 were accepted by a local testnet-10 node on 7 Oct 2026. The other 20,144,800 was not submitted. The ids are in [LIVE.md](LIVE.md). This is not a mainnet token.
 
 A meme is this shape: a name, a cap, and a crowd of callers. A utility still needs an entrypoint that reads the extension. A stable is a separate redeem. The KUSDT lock paid the full sompi back to the holder and kept the fee on a second input. Six engine tests and five guest tests passed.
 
@@ -85,7 +85,7 @@ The measured script public key is 35 bytes. With the covenant id, storage plural
 
 ## Swarm run
 
-On 7 Oct 2026 the reference machine at `8c8dc8ee` minted this token. One genesis, 149 splits, and 150 caller mints. Issued supply 20,280,000. The 150 mints do not share a minter output, so each one is accepted without waiting for the others. Two mints of the same output both pass the script and spend one outpoint. A further mint after zero is rejected. The engine spent 302 ms on the 150 mints. No transaction was sent to a node. The log is [SWARM.md](SWARM.md).
+On 7 Oct 2026 the reference machine at `8c8dc8ee` minted this token. One genesis, 149 splits, and 150 caller mints. Issued supply 20,280,000. The 150 mints do not share a minter output, so each one is accepted without waiting for the others. Two mints of the same output both pass the script and spend one outpoint. A further mint after zero is rejected. The engine spent 302 ms on the 150 mints. Those virtual-machine ids were not sent to a node. The log is [SWARM.md](SWARM.md). The separate network mint is one lot, in [LIVE.md](LIVE.md).
 
 ## What was tested
 
@@ -93,7 +93,7 @@ Details and the commands are in [RESULTS.md](RESULTS.md).
 
 1. Reference suite at `8c8dc8ee`: `cargo test --locked --all-targets` passed 54 tests. `cargo run --locked --bin kcc20 -- mint` exited 0 and minted the example allowance down to zero. Those ids are virtual-machine ids.
 2. Script public key: 35 bytes, plurality 2. Compiled bytecode is 2,019 bytes for PublicMint, 4,031 for KCC20, and 1,355 for TokenSeed. Plurality 4 on the thin shape is 938,411 grams.
-3. No node submission. The example funds itself with a synthetic `OP_TRUE` output at a demo outpoint. gRPC `127.0.0.1:16210` and Borsh `17210` answered. JSON `18210` did not. Public mempools were not used.
+3. Local testnet-10. One genesis and one mint of 135,200 were accepted. A second mint of the same minter output was rejected as already spent in the mempool. [LIVE.md](LIVE.md). The 150-caller machine run was not submitted. Public mempools were not used.
 4. Mempool weight is `(fee / mass) ^ 3`. A ratio of 50 outweighs a ratio of 4 by 1,953 times. `mint-150` holds about 2.6 percent of the weight, so it does not always land first. In 4,000 seeded draws the ordinary transaction was never first.
 5. Integer edges in this model: `2^63 - 1` mints to zero, one more is rejected, a half of 1 is rejected, scheme byte `0x80` is rejected, and a reclaim by the wrong owner is rejected. The reference suite also accepts `i64::MAX` and rejects a reclaim by the wrong key.
 6. `TokenSeed` in the reference suite: a create of 1 token is rejected, a create of 0 is accepted, and a borrowed receive then pays into that receiver. The seed does not increase supply.
