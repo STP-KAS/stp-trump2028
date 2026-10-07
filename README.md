@@ -17,7 +17,7 @@ On 7 Oct 2026 that node accepted the genesis and the mint. A second mint of the 
 
 The issued lot is 135,200. The allowance left on the minter is 20,144,800. The node reports compute mass 8,706 and storage mass 17,520 for the mint. The covenant script in that transaction carries the extension, the supply, and the lot. The name text is not in the script. Both covenant outputs use covenant id `9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8`.
 
-KCC means Kaspa Covenant Convention. KCC-20 is the Draft fungible-token covenant. On kaspanet/kccs commit `411b41bc` the text standardizes six state fields and a transfer. The fields, in order, are amount, owner, owner scheme, borrow scheme, borrow guard, and extension commitment. A transfer keeps the sum of the amounts. The same extension commitment is what makes two states the same token. The Draft has no mint chapter and no supply cap.
+KCC means Kaspa Covenant Convention. KCC-20 is the Draft fungible-token covenant. On kaspanet/kccs commit `411b41bc` the text standardizes six state fields and a transfer. The fields, in order, are amount, owner, owner scheme, borrow scheme, borrow guard, and extension commitment. A transfer keeps the sum of the amounts. Inside one covenant family, the same extension commitment is what makes two states fungible. Two launch paths with that same digest are two covenant ids. The Draft has no mint chapter and no supply cap. The borrow-threshold contradiction is in [FINDINGS.md](FINDINGS.md).
 
 Issuance lives in the reference app `KCC20PublicMint`, on the open pull argent-lang/kcc20-reference#1. The README at commit `72767847` (7 Oct 2026, 13:44Z) describes it. The mint code is the parent commit `8c8dc8ee`, file `contracts/public_mint.ag`. That app is a local Argent program. Its own examples do not submit transactions. The reference repository's master branch is still the 10 Sep stub `76648f99`. The mint is not on that branch. Argent's own master moved the same day to `9a9f4b10`. That commit is the compiler. KCC-20 remains Draft.
 
@@ -41,7 +41,7 @@ The knob on a KCC public mint is the per-mint limit, plus how small the KAS outp
 
 ## How
 
-The rules below are the reference rules, run in `src/mint.mjs`. This is not the Argent virtual machine. Fourteen tests check the model, including the fee the accepted mint actually paid. `npm test` reruns them. `npm run storm` prints the numbers. The Argent run and the KUSDT redeem run are in [RESULTS.md](RESULTS.md).
+The rules below are the reference rules, run in `src/mint.mjs`. This is not the Argent virtual machine. Fifteen tests check the model, including the fee the accepted mint actually paid and the draft borrow formula. `npm test` reruns them. `npm run storm` prints the numbers. The Argent run and the KUSDT redeem run are in [RESULTS.md](RESULTS.md).
 
 Genesis is one minter. `remaining` is 20,280,000. `mint_amount` is 135,200. The extension commitment is unkeyed BLAKE3 of the UTF-8 bytes `stp trump2028`:
 
@@ -49,7 +49,7 @@ Genesis is one minter. `remaining` is 20,280,000. `mint_amount` is 135,200. The 
 379d7a15ef3efe6104cb58d99e0633c95d54f679914cbbffcba99230dbdb5706
 ```
 
-BLAKE3 of the empty input matches the known vector `af1349b9…1f3262`, so the hash function is the real one. KCC-1 calls this hash `Hash`. The commitment is the token identity. A mint with any other commitment is rejected.
+BLAKE3 of the empty input matches the known vector `af1349b9…1f3262`, so the hash function is the real one. KCC-1 calls this hash `Hash`. Inside one covenant family, a mint with any other commitment is rejected. The commitment does not by itself choose the covenant id.
 
 A mint must be a positive amount, at most 135,200, and at most the minter's remaining allowance. The caller chooses the recipient. The minter's KAS deposit is recreated at the same value. The fee is extra sompi from the caller. It is not skimmed from the deposit.
 

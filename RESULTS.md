@@ -123,4 +123,4 @@ node --test guest/split.test.mjs
 npm test
 ```
 
-14 passed, 0 failed. That run checks the supply, the 150 fee ratios, the plurality, the integer edges, the weight draws above, and the fee the accepted mint paid. The mint fee is half its transient mass times 400 sompi per gram, which is 5,172,800 sompi. Storage mass 17,520 is higher than that relay mass.
+15 passed, 0 failed. That run checks the supply, the 150 fee ratios, the plurality, the integer edges, the weight draws above, the fee the accepted mint paid, and the draft borrow formula. The mint fee is half its transient mass times 400 sompi per gram, which is 5,172,800 sompi. Storage mass 17,520 is higher than that relay mass. A literal reading of the draft lets a threshold of -1,000 reduce a balance from 1,000 to 1. The reference clamp rejects that.

@@ -19,6 +19,7 @@ import {
 } from "../src/mint.mjs";
 import { pack, report, shapes } from "../src/storm.mjs";
 import { firstPickCounts, weight, weightShare } from "../src/sample.mjs";
+import { draftBorrowAllows, referenceBorrowAllows } from "../src/draft-borrow.mjs";
 
 test("the name commits with unkeyed BLAKE3", async () => {
   const { blake3 } = await import("@noble/hashes/blake3");
@@ -175,6 +176,16 @@ test("higher fee ratio is mined first and a full block leaves the ordinary tx wa
   const light = pack([...callers, ordinary], 1_624n);
   assert.equal(light.first, ADDRESS_COUNT + 1);
   assert.equal(light.ordinaryInFirst, true);
+});
+
+test("a literal draft borrow lets a negative threshold reduce the balance", () => {
+  const before = 1_000n;
+  const after = 1n;
+  const threshold = -1_000n;
+  assert.equal(draftBorrowAllows(before, after, threshold), true);
+  assert.equal(referenceBorrowAllows(before, after, threshold), false);
+  assert.equal(draftBorrowAllows(before, before, -1n), true);
+  assert.equal(referenceBorrowAllows(before, before, -1n), false);
 });
 
 test("the accepted mint pays half its transient mass", () => {
