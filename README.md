@@ -83,6 +83,10 @@ One hundred and fifty thin covenant mints are 7.6 seconds at 10 blocks per secon
 
 The measured script public key is 35 bytes. With the covenant id, storage plurality is 2, and that is the mass table above. The compiled bytecode is longer than the script public key because the redeem script is revealed on spend. It does not sit in the output. A plurality of 4 would make one thin mint heavier than a block. This artifact is not that heavy.
 
+## Swarm run
+
+On 7 Oct 2026 the reference machine at `8c8dc8ee` minted this token. One genesis, 149 splits, and 150 caller mints. Issued supply 20,280,000. The 150 mints do not share a minter output, so each one is accepted without waiting for the others. Two mints of the same output both pass the script and spend one outpoint. A further mint after zero is rejected. The engine spent 302 ms on the 150 mints. No transaction was sent to a node. The log is [SWARM.md](SWARM.md).
+
 ## What was tested
 
 Details and the commands are in [RESULTS.md](RESULTS.md).
