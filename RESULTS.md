@@ -62,7 +62,9 @@ Mint `1fd8391dacb6757f4df5f5a59ce60788c39d423f6613ae4a2f51602471e63ecc` took one
 
 The second mint `f6979e31e11895d164750513484eabde3a9b4da7009e2d9d64c1d59a2332b5aa` was rejected. The node said output `(44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056, 0)` was already spent by the first mint in the mempool. It was not retried. It is not in a block.
 
-A later virtual-chain read from the parent of the genesis block listed both accepted ids and removed no blocks. Neither transaction was still in the mempool. Fee, mass, and output values are in [LIVE.md](LIVE.md).
+A later virtual-chain read from the parent of the genesis block listed both accepted ids and removed no blocks. Neither transaction was still in the mempool.
+
+A second read, with the virtual DAA score at 590,565,584, still found those blocks. The mint's accepting block remains a chain block. The stored mint is version 1, storage mass 17,520, compute mass 8,706, sigop count 0 on both inputs. Its covenant script contains the extension, the supply 20,280,000, and the lot 135,200. Both covenant outputs share covenant id `9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8`. Fee, mass, and output values are in [LIVE.md](LIVE.md).
 
 ## 4. How the node orders fee ratios
 
@@ -121,4 +123,4 @@ node --test guest/split.test.mjs
 npm test
 ```
 
-13 passed, 0 failed. That run checks the supply, the 150 fee ratios, the plurality, the integer edges, and the weight draws above.
+14 passed, 0 failed. That run checks the supply, the 150 fee ratios, the plurality, the integer edges, the weight draws above, and the fee the accepted mint paid. The mint fee is half its transient mass times 400 sompi per gram, which is 5,172,800 sompi. Storage mass 17,520 is higher than that relay mass.

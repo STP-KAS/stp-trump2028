@@ -83,4 +83,34 @@ The virtual chain read started at the selected parent of the genesis block. It l
 
 The mint block carried 827 transactions. This submit added one of them.
 
+## Read back
+
+A later read of the same local node, still rusty-kaspa 2.1.0 and still synced, found the same blocks. Virtual DAA score 590,565,584. Mempool size 3. The distance from the mint's accepting block is 20,407 DAA scores.
+
+```text
+genesis-included chain yes daa 590545172 txs 213 carries the genesis id
+genesis-accepted chain yes daa 590545175
+mint-included chain no daa 590545176 txs 827 carries the mint id
+mint-accepted chain yes daa 590545177
+```
+
+The mint transaction, as stored in its block, is version 1. Payload length 0. Storage mass 17,520. The node's own compute mass for it is 8,706. Input 0 spends genesis output 0, compute budget 5, sigop count 0, signature script 6,024 bytes. Input 1 spends genesis output 1, compute budget 10, sigop count 0, signature script 66 bytes.
+
+That 6,024-byte script contains the extension commitment. Further along, the byte `0x08` precedes the little-endian supply 20,280,000, and another `0x08` precedes the little-endian lot 135,200. The name and the path are not in the script. The new remaining 20,144,800 is not a second integer in the witness.
+
+Both mint outputs are script-hash outputs and carry the same covenant id, bound to authorizing input 0. Genesis output 0 carries that same id. Genesis output 1 has no covenant. The id is:
+
+```text
+9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8
+```
+
+The script-hash addresses on the mint are:
+
+```text
+minter kaspatest:ppj0qkpzclyr8janwc6lc2xh90gl6vse2xya9kkjw2cx99sufrywvzpd5lscm
+token kaspatest:pr6dylvay08cwwkdnwfxk34dlzz5l8fjsrkp0afjgqauq2eef4mu7p0y8nw72
+```
+
+The RPC script-public-key field on each of those outputs is 37 bytes. The pay-to-script-hash template in the model is 35 bytes. The node labels the type ScriptHash.
+
 Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.

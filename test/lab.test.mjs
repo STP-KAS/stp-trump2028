@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { storageMass, asCells, BLOCK_MASS, COVENANT_PLURALITY, P2SH_SCRIPT_LEN, plurality, mintShape, SOMPI_PER_KAS } from "../src/mass.mjs";
+import { storageMass, asCells, BLOCK_MASS, COVENANT_PLURALITY, P2SH_SCRIPT_LEN, plurality, mintShape, relayFee, relayMass, SOMPI_PER_KAS } from "../src/mass.mjs";
 import {
   ADDRESS_COUNT,
   EXTENSION,
@@ -175,6 +175,21 @@ test("higher fee ratio is mined first and a full block leaves the ordinary tx wa
   const light = pack([...callers, ordinary], 1_624n);
   assert.equal(light.first, ADDRESS_COUNT + 1);
   assert.equal(light.ordinaryInFirst, true);
+});
+
+test("the accepted mint pays half its transient mass", () => {
+  assert.equal(SUPPLY - MINT_LIMIT, 20_144_800n);
+  assert.equal(relayMass(8_706n, 25_864n), 12_932n);
+  assert.equal(relayFee(8_706n, 25_864n, 400n), 5_172_800n);
+  assert.equal(relayFee(2_083n, 1_412n, 400n), 833_200n);
+  assert.ok(17_520n > relayMass(8_706n, 25_864n));
+  assert.ok(relayFee(8_706n, 25_864n, 400n) < 17_520n * 400n);
+  const coinbase = 706_277_464n;
+  const minter = 176_569_366n;
+  const change = 524_535_298n;
+  const carrier = 519_362_498n;
+  assert.equal(coinbase - minter - change, 5_172_800n);
+  assert.equal(minter + change - minter - carrier, 5_172_800n);
 });
 
 test("the storm report closes the supply and names the counterfactual", () => {

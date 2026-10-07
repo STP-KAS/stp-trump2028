@@ -1,7 +1,7 @@
 // Storage mass from rusty-kaspa consensus::mass::calc_storage_mass.
 // C is SOMPI_PER_KASPA * 10_000. Plurality defaults to 1.
-// Overall mass charged by the node is max(compute mass, storage mass).
-// This file computes storage mass only.
+// Version-1 relay mass is max(compute, ceil(transient / 2)).
+// Storage mass is committed on the transaction. It is not the relay mass.
 
 export const STORAGE_C = 1_000_000_000_000n;
 export const BLOCK_MASS = 500_000n;
@@ -34,6 +34,15 @@ function cell(amount, plurality = 1n) {
 
 export function asCells(values, plurality = 1n) {
   return values.map((amount) => cell(amount, plurality));
+}
+
+export function relayMass(compute, transient) {
+  const normalized = (transient + 1n) / 2n;
+  return compute > normalized ? compute : normalized;
+}
+
+export function relayFee(compute, transient, sompiPerGram) {
+  return relayMass(compute, transient) * sompiPerGram;
 }
 
 export function storageMass(inputs, outputs, storm = STORAGE_C) {
