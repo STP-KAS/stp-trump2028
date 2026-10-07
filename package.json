@@ -1,0 +1,12 @@
+{
+  "name": "stp-trump2028",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "storm": "node src/storm.mjs"
+  },
+  "dependencies": {
+    "@noble/hashes": "^1.8.0"
+  }
+}
