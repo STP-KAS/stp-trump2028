@@ -31,6 +31,12 @@ Build's gross debit, before the reclaim payouts come back, is 8,101.00 KAS. The 
 
 The odd-leaf deposits are owned by the Build address. Bot does not reclaim them. Bot pays the carrier and the fee for each odd mint from the Bot wallet.
 
+## Slow odd sample
+
+Build then minted twelve odd leaves, indexes 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, and 23, one every 3 seconds. The local node accepted all twelve. Those leaf outpoints then left the remaining-4,056 set. The payer was the Build wallet, from a 21 KAS coin, at 100 sompi/gram. Storage mass on this smaller coin was 72,816 to 76,511 grams. Fees were 0.900707 KAS, plus 12 KAS of carriers. That is about 12.90 KAS more, still inside the 1,000,000 tKAS cap. The rows are in `odds.json`. The other odd leaves stay open for Bot.
+
+The builder Bot runs is [tools/README.md](tools/README.md). It builds only odd mints. It does not launch, split, or reclaim.
+
 ## Stop
 
 Stop reason: the even half was accepted, the odd half is Bot's, and the spend is inside the 1,000,000 tKAS cap. The run did not hit 20 rejects, and it did not run out of tKAS.

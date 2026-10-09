@@ -18,7 +18,7 @@ If `map/build/LAUNCH.md` is not on the branch, write `map/bot/WAITING.md` with t
 
 An odd leaf can be minted when its outpoint is in a block or already in the mempool. The split chain is serial. If the node does not know that outpoint yet, skip the leaf and come back. Do not split a new tree.
 
-If Build has already minted an odd leaf, skip it. Leave every even index. `map/build/FINDINGS.md` says the even half was accepted. Do not mint those again.
+If Build has already minted an odd leaf, skip it. `map/build/odds.json` records indexes 1 through 23. `leaves.json` shows those remaining values as 0. Leave every even index. The builder you run is [map/build/tools/README.md](map/build/tools/README.md). It does not launch, split, or reclaim.
 
 ## Rules that do not move
 
