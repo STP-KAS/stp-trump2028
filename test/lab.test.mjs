@@ -5,7 +5,9 @@ import {
   ADDRESS_COUNT,
   EXTENSION,
   I64_MAX,
+  LAUNCH_PATH,
   MINT_LIMIT,
+  PRIOR_LAUNCH_PATH,
   SUPPLY,
   TOKEN_NAME,
   addresses,
@@ -19,13 +21,15 @@ import {
 } from "../src/mint.mjs";
 import { pack, report, shapes } from "../src/storm.mjs";
 import { firstPickCounts, weight, weightShare } from "../src/sample.mjs";
-import { draftBorrowAllows, referenceBorrowAllows } from "../src/draft-borrow.mjs";
+import { draftBorrowAllows, lastCallBorrowAllows, referenceBorrowAllows } from "../src/draft-borrow.mjs";
 
 test("the name commits with unkeyed BLAKE3", async () => {
   const { blake3 } = await import("@noble/hashes/blake3");
   const empty = Buffer.from(blake3(new Uint8Array())).toString("hex");
   assert.equal(empty, "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262");
   assert.equal(TOKEN_NAME, "stp trump2028");
+  assert.equal(LAUNCH_PATH, "launch::stp-trump2028-last-call");
+  assert.equal(PRIOR_LAUNCH_PATH, "launch::stp-trump2028");
   assert.equal(EXTENSION.length, 64);
   assert.equal(
     EXTENSION,
@@ -33,7 +37,9 @@ test("the name commits with unkeyed BLAKE3", async () => {
   );
 });
 
-test("supply is 150 mint limits and genesis holds all of it", () => {
+test("supply is 5000 mint limits and genesis holds all of it", () => {
+  assert.equal(ADDRESS_COUNT, 5000);
+  assert.equal(MINT_LIMIT, 4056n);
   assert.equal(MINT_LIMIT * BigInt(ADDRESS_COUNT), SUPPLY);
   const root = genesis();
   assert.equal(root.remaining, SUPPLY);
@@ -78,7 +84,7 @@ test("the deposit returns only at zero and only to its owner", () => {
   assert.equal(reclaim(empty, root.owner).released, root.kas);
 });
 
-test("150 leaves each mint once and the supply is exhausted", () => {
+test("5000 leaves each mint once and the supply is exhausted", () => {
   const tree = splitToLeaves();
   assert.equal(tree.minters.length, ADDRESS_COUNT);
   const splitTxs = tree.rounds.reduce((sum, round) => sum + round.length, 0);
@@ -87,8 +93,10 @@ test("150 leaves each mint once and the supply is exhausted", () => {
   const callers = addresses();
   const ratios = new Set(callers.map((row) => row.feeRatio.toString()));
   assert.equal(ratios.size, ADDRESS_COUNT);
+  assert.equal(callers[0].name, "mint-0001");
   assert.equal(callers[0].feeRatio, 50n);
-  assert.equal(callers[149].feeRatio, 3775n);
+  assert.equal(callers[4999].name, "mint-5000");
+  assert.equal(callers[4999].feeRatio, 5049n);
   for (let index = 0; index < tree.minters.length; index += 1) {
     const before = tree.minters[index];
     assert.equal(before.remaining, MINT_LIMIT);
@@ -123,7 +131,7 @@ test("a covenant output has plurality 2 and a plurality of 4 does not fit", () =
   assert.equal(body.thin.grams, 232955n);
   assert.equal(body.oneKas.grams, 73069n);
   assert.equal(body.fat.grams, 653n);
-  assert.ok(body.fat.grams * BigInt(ADDRESS_COUNT) < BLOCK_MASS);
+  assert.ok(body.fat.grams * BigInt(ADDRESS_COUNT) > BLOCK_MASS);
   const kas = SOMPI_PER_KAS;
   const tooWide = mintShape({
     deposit: kas,
@@ -154,14 +162,14 @@ test("fee weight is the cube of the ratio, so the top mint is not certain", () =
   assert.equal(weight(50n) / weight(4n), 1953n);
   const rows = [...addresses(), { index: -1, name: "ordinary", feeRatio: 4n }];
   const shares = weightShare(rows);
-  const top = shares.find((row) => row.name === "mint-150");
-  const low = shares.find((row) => row.name === "mint-001");
+  const top = shares.find((row) => row.name === "mint-5000");
+  const low = shares.find((row) => row.name === "mint-0001");
   const ordinary = shares.find((row) => row.name === "ordinary");
   assert.ok(top.share < 0.05);
   assert.ok(low.share > ordinary.share);
   const counts = firstPickCounts(rows, 4000, 7);
   assert.equal(counts.get("ordinary"), 0);
-  assert.ok(counts.get("mint-150") > counts.get("mint-001"));
+  assert.ok(counts.get("mint-5000") > counts.get("mint-0001"));
 });
 
 test("higher fee ratio is mined first and a full block leaves the ordinary tx waiting", () => {
@@ -170,26 +178,30 @@ test("higher fee ratio is mined first and a full block leaves the ordinary tx wa
   const heavy = pack([...callers, ordinary], 25_000n);
   assert.equal(heavy.perBlock, 20);
   assert.equal(heavy.first, 20);
-  assert.equal(heavy.firstNames[0], "mint-150");
+  assert.equal(heavy.firstNames[0], "mint-5000");
   assert.equal(heavy.ordinaryInFirst, false);
-  assert.equal(heavy.blocks >= 8, true);
+  assert.equal(heavy.blocks, 251);
   const light = pack([...callers, ordinary], 1_624n);
-  assert.equal(light.first, ADDRESS_COUNT + 1);
-  assert.equal(light.ordinaryInFirst, true);
+  assert.equal(light.first, 307);
+  assert.equal(light.blocks, 17);
+  assert.equal(light.ordinaryInFirst, false);
 });
 
-test("a literal draft borrow lets a negative threshold reduce the balance", () => {
+test("last call clamps a negative threshold and the old box does not", () => {
   const before = 1_000n;
-  const after = 1n;
+  const down = 1n;
+  const up = 1_001n;
   const threshold = -1_000n;
-  assert.equal(draftBorrowAllows(before, after, threshold), true);
-  assert.equal(referenceBorrowAllows(before, after, threshold), false);
+  assert.equal(draftBorrowAllows(before, down, threshold), true);
+  assert.equal(lastCallBorrowAllows(before, down, threshold), false);
+  assert.equal(referenceBorrowAllows(before, down, threshold), false);
+  assert.equal(lastCallBorrowAllows(before, up, threshold), true);
   assert.equal(draftBorrowAllows(before, before, -1n), true);
-  assert.equal(referenceBorrowAllows(before, before, -1n), false);
+  assert.equal(lastCallBorrowAllows(before, before, -1n), false);
 });
 
 test("the accepted mint pays half its transient mass", () => {
-  assert.equal(SUPPLY - MINT_LIMIT, 20_144_800n);
+  assert.equal(20_280_000n - 135_200n, 20_144_800n);
   assert.equal(relayMass(8_706n, 25_864n), 12_932n);
   assert.equal(relayFee(8_706n, 25_864n, 400n), 5_172_800n);
   assert.equal(relayFee(2_083n, 1_412n, 400n), 833_200n);
@@ -207,17 +219,19 @@ test("the storm report closes the supply and names the counterfactual", () => {
   const result = report();
   assert.equal(result.token, TOKEN_NAME);
   assert.equal(result.issued, SUPPLY.toString());
-  assert.equal(result.addresses, 150);
-  assert.equal(result.highestFirst, "mint-150");
-  assert.equal(result.lowestMint, "mint-001");
+  assert.equal(result.addresses, 5000);
+  assert.equal(result.mintLimit, "4056");
+  assert.equal(result.launchPath, "launch::stp-trump2028-last-call");
+  assert.equal(result.highestFirst, "mint-5000");
+  assert.equal(result.lowestMint, "mint-0001");
   assert.equal(result.mintAmountOneCounterfactual.hoursAt1Bps, "281.67");
   assert.equal(result.mintAmountOneCounterfactual.hoursAt10Bps, "28.17");
-  assert.deepEqual(result.roundSizes, [1, 2, 4, 8, 16, 32, 64, 22]);
+  assert.deepEqual(result.roundSizes, [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 904]);
   assert.equal(result.shapes.thinGrams, "232955");
   assert.equal(result.shapes.oneKasGrams, "73069");
   assert.equal(result.shapes.fatGrams, "653");
-  assert.equal(result.packs.thin.blocks, 76);
-  assert.equal(result.packs.oneKas.blocks, 26);
-  assert.equal(result.packs.fat.blocks, 1);
+  assert.equal(result.packs.thin.blocks, 2501);
+  assert.equal(result.packs.oneKas.blocks, 834);
+  assert.equal(result.packs.fat.blocks, 7);
   assert.equal(fail("marker").reason, "marker");
 });

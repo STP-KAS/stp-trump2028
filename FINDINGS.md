@@ -1,44 +1,41 @@
 > **Experimental. Not advice.**
 >
-> A reading of the Draft and the reference, checked on this machine. Not a patch. Not posted upstream.
+> A reading of Last Call KCC-20 and the merged reference, checked in this model. Not a patch. Not posted upstream.
 
-# Two holes
+# Last Call reading
 
-## 1. A negative borrow threshold can reduce a balance
+Pins: kaspanet/kccs `3fbec524` (main, 7 Oct 2026, KCC-20 status Last Call) and argent-lang/kcc20-reference `c8a08711`. Nothing here was posted on kaspanet/kccs or on the reference repository.
 
-The Draft says two things that do not fit together.
+## 1. The decrease hole is closed in the text
 
-In kaspanet/kccs `411b41bc`, `kcc-0020.md` says the first eight bytes of an `amount-threshold/v1` guard are a non-negative KCC-1 `int`. The boxed rule then does this:
+On `411b41bc` the boxed compare used the raw signed threshold. A balance of 1,000 with a threshold of -1,000 could fall to 1, because `-999 > -1000`. A threshold of -1 allowed a borrow that left the balance unchanged.
 
-```text
-amount_difference = next_states[0].amount - leader_state.amount
-require(amount_difference > amount_threshold)
-```
+Last Call `3fbec524` sets the effective threshold to `max(decoded_threshold, 0)` and requires the increase to exceed that. The same fall to 1 is now a reject. An unchanged balance is a reject. The reference clamp and this text now say the same thing. `npm test` locks both answers: the old box still allows the fall, and Last Call does not.
 
-The prose under that box says every borrowed receive must increase the token amount.
+A negative payload still allows a borrow that increases the amount by one. That matches a threshold of zero. The stored guard bytes stay as they were. The vector `threshold-guard-normalized` rejects a borrow that rewrites a negative guard into a zero guard.
 
-Take a balance of 1,000 and a threshold of -1,000. The next amount 1 gives a difference of -999. `-999 > -1000` is true, so the boxed rule allows the balance to fall to 1. A threshold of -1 allows a borrow that leaves the balance unchanged. Neither is an increase.
+The caller of `mint` can still install that negative payload. The recipient does not sign the mint.
 
-The reference does not follow that box. In `contracts/kcc20.ag` a negative threshold is replaced with 0 before the compare, and the borrow then requires a positive increase. `threshold_borrow_clamps_nonpositive_thresholds_to_zero` passed on this machine. The same run accepted `public_mint_accepts_caller_selected_guard`: a mint may install the KCC-1 encoding of -1, which is byte `0x01` followed by six zero bytes and a final `0x80`. The caller of `mint` chooses that guard. The recipient does not sign.
+## 2. One extension is still not one covenant
 
-So a program that codes the box, and not the clamp, lets the minter hand someone a token and later pull the balance down. The reference on this machine does not. `npm test` locks the two answers. Script addition on this node uses checked addition and rejects a sum outside the i64 range, so this is not an overflow wrap.
+Fungibility in the text is inside one covenant family. The same extension on two launch paths is two covenant ids.
 
-## 2. One extension is not one covenant
-
-The Draft limits fungibility to one covenant family. The same extension in two families is not defined as one token.
-
-A VM launch of `PublicMint` with extension `11` repeated 32 times, path `launch::one`, and a second launch with the same extension and path `launch::two`, produced two covenant ids. The test `same_extension_under_two_launch_paths_is_two_covenant_ids` passed. The name `stp trump2028` is not in the accepted mint script. The script carries the digest. A wallet that keys only on that digest will merge two families. A wallet that keys only on the covenant id will split one name.
-
-The live mint's covenant id remains:
+The 7 Oct submit used path `launch::stp-trump2028` and covenant id:
 
 ```text
 9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8
 ```
 
-## What these are not
+Its signing key was discarded. Remaining allowance 20,144,800 stays on that family. The plan on the front page uses path `launch::stp-trump2028-last-call`. That is a new family even though the name digest is the same. A wallet that keys only on the digest will merge the two. A wallet that keys only on the covenant id will keep them apart.
 
-No second transaction was sent. The 150-caller swarm was not sent. Nothing was posted on kaspanet/kccs or on the reference pull.
+## 3. The header still writes P2PKHHash and sets no deadline
 
-The next hard checks are a second program that implements the boxed rule and fails the reference's negative-guard cases, a P2SH authority index of 255 on a short transaction, and a KCC20 input whose amount is negative. Those three are not run yet.
+The Last Call default configuration still names `P2PKHHash(pubkey)` for schemes `0x01` and `0x02`. KCC-2 defines the value as unkeyed `Hash(x)` and does not define that name. This mint uses owner scheme `0x00`, `p2pk-schnorr/v1`, so the owner field is the public key and this name is not on the mint path.
+
+KCC-0 says a Last Call header carries a Last-Call-Deadline. The `3fbec524` header has the status and no deadline. KCC-20 is not Final.
+
+## What is not run
+
+No second program was written for the old box. A P2SH authority index of 255 on a short transaction is not run. A KCC20 input with a negative amount is not run. The 5,000-address mint is not submitted. The 150-caller swarm was not submitted.
 
 Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.

@@ -2,7 +2,10 @@ import { pathToFileURL } from "node:url";
 import { mintShape, BLOCK_MASS, SOMPI_PER_KAS, COVENANT_PLURALITY } from "./mass.mjs";
 import {
   ADDRESS_COUNT,
+  KCCS_COMMIT,
+  LAUNCH_PATH,
   MINT_LIMIT,
+  REFERENCE_COMMIT,
   SUPPLY,
   TOKEN_NAME,
   EXTENSION,
@@ -130,6 +133,9 @@ export function report() {
 
   return {
     token: TOKEN_NAME,
+    launchPath: LAUNCH_PATH,
+    kccs: KCCS_COMMIT,
+    reference: REFERENCE_COMMIT,
     extension: EXTENSION,
     supply: SUPPLY.toString(),
     mintLimit: MINT_LIMIT.toString(),

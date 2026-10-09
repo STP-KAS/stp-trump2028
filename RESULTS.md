@@ -1,6 +1,6 @@
 # What was tested
 
-Run on 7 Oct 2026. The reference checkout is commit `8c8dc8ee`. Rust was `rustc 1.97.1`. Sections 1, 2, and 4 through 7 did not submit. Section 3 did: one local testnet-10 genesis and one mint.
+This log is the 7 Oct 2026 run. The current plan is on the front page: Last Call `3fbec524`, reference `c8a08711`, and 5,000 addresses. The checkout below is still commit `8c8dc8ee`. Rust was `rustc 1.97.1`. Sections 1, 2, and 4 through 7 did not submit. Section 3 did: one local testnet-10 genesis and one mint.
 
 ## 1. The reference machine
 

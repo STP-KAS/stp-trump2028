@@ -2,8 +2,14 @@ import { commitment } from "./commitment.mjs";
 
 export const TOKEN_NAME = "stp trump2028";
 export const SUPPLY = 20_280_000n;
-export const MINT_LIMIT = 135_200n;
-export const ADDRESS_COUNT = 150;
+export const ADDRESS_COUNT = 5000;
+export const MINT_LIMIT = SUPPLY / BigInt(ADDRESS_COUNT);
+export const LAUNCH_PATH = "launch::stp-trump2028-last-call";
+export const PRIOR_LAUNCH_PATH = "launch::stp-trump2028";
+export const KCCS_COMMIT = "3fbec524";
+export const REFERENCE_COMMIT = "c8a08711";
+// The 7 Oct 2026 submit used a different limit and the prior launch path.
+export const ACCEPTED_LOT = 135_200n;
 export const I64_MAX = 9223372036854775807n;
 export const EXTENSION = commitment(TOKEN_NAME);
 
@@ -69,6 +75,7 @@ export function mint(minter, recipient) {
 }
 
 // PublicMint.split: take is at most half, integer division, and at least 1.
+// The reference leaves the child deposit unrestricted. The caller funds it.
 export function split(minter, take, child) {
   if (!fitsI64(take) || !fitsI64(minter.remaining)) {
     throw fail("i64");
@@ -152,7 +159,9 @@ export function feeRatio(index) {
   if (index < 0 || index >= ADDRESS_COUNT) {
     throw fail("index");
   }
-  return 50n + BigInt(index) * 25n;
+  // One sompi/gram apart. A 25-sompi step across 5,000 callers makes the
+  // cubed weights too large for the sampler's JavaScript number.
+  return 50n + BigInt(index);
 }
 
 export function addresses() {
@@ -161,7 +170,7 @@ export function addresses() {
     const ratio = feeRatio(index);
     rows.push({
       index,
-      name: `mint-${String(index + 1).padStart(3, "0")}`,
+      name: `mint-${String(index + 1).padStart(4, "0")}`,
       feeRatio: ratio,
     });
   }

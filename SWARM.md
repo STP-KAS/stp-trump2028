@@ -4,6 +4,8 @@
 
 # Swarm mint
 
+This log is the 7 Oct 2026 machine run: 150 callers and a per-mint limit of 135,200. The current plan is 5,000 addresses at 4,056, on the front page. It has not been run here.
+
 The reference machine minted `stp trump2028`. One hundred and fifty callers. Limited supply. The run stayed on this machine.
 
 This is not a Kaspa transaction. The ids below are virtual-machine ids. Nothing in this run was submitted to a node. The separate network mint is [LIVE.md](LIVE.md).

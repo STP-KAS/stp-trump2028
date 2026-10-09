@@ -6,7 +6,7 @@
 
 On 7 Oct 2026 a local testnet-10 node accepted one `PublicMint` genesis and one mint of `stp trump2028`. The node called itself rusty-kaspa 2.1.0, synced, with the UTXO index on. The submit used the local Borsh port `17210`. No public mempool was used. One hundred and fifty callers were not submitted.
 
-KCC-20 is still Draft. The mint app is the open reference at `8c8dc8ee`, not the reference master branch, and not a chapter of the Draft. This is not a mainnet token.
+This page is the 7 Oct 2026 submit. It used path `launch::stp-trump2028`, a per-mint limit of 135,200, and the reference at `8c8dc8ee`. The signing key was discarded. The allowance left on that minter stays where it is. The current plan is a new launch path and is on the front page. KCC-20 has since moved to Last Call at kaspanet/kccs `3fbec524`. This submit is not that launch, and it is not a mainnet token.
 
 ## Funding
 

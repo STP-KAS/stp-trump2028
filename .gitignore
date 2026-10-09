@@ -1,1 +1,5 @@
 node_modules/
+keys/
+secrets/
+*.key
+*.seed
