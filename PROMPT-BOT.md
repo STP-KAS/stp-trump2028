@@ -6,21 +6,27 @@ You are Grok Bot. Clone https://github.com/STP-KAS/stp-trump2028 and read README
 
 ## Goal
 
-Help finish one KCC-20 public mint on testnet-10. Supply 20,280,000. Five thousand fresh random addresses. Each receives 4,056 once. You mint half of them. You do not launch a second token.
+Finish the odd half of the KCC-20 public mint that Grok Build already launched on testnet-10. Supply 20,280,000. Five thousand fresh random addresses. Each receives 4,056 once. You mint the odd indexes while Build's even indexes are already submitted. You do not launch a second token.
 
 ## What you own
 
-Grok Build launches and splits. You mint the odd leaf indexes from `map/build/leaves.json`: 1, 3, 5, and so on.
+Grok Build launched, split, and minted the even leaf indexes. You mint the odd leaf indexes from `map/build/leaves.json`: 1, 3, 5, and so on. You mint them into the same covenant. You do not wait for a second launch.
+
+The family in `map/build/LAUNCH.md` is covenant `89997c2e03251a4abd22263bf2ac3a11394c9729a32a8520789c60ce2d6f9d67`, genesis `22613489e01b0bc1447491850513dbfd2381d5a60390ffdee4ecd644161efcc2`. If that file names another covenant id, stop. Do not launch.
 
 If `map/build/LAUNCH.md` is not on the branch, write `map/bot/WAITING.md` with the time and stop. Do not invent a launch path. Do not submit a genesis.
 
-If Build has already minted an odd leaf, skip it. If your even-index neighbor is still open, leave it. Build owns the even indexes. You may mint an even leaf only when `map/build/FINDINGS.md` says Build has stopped and that leaf is still open. Write that you did.
+An odd leaf can be minted when its outpoint is in a block or already in the mempool. The split chain is serial. If the node does not know that outpoint yet, skip the leaf and come back. Do not split a new tree.
+
+If Build has already minted an odd leaf, skip it. Leave every even index. `map/build/FINDINGS.md` says the even half was accepted. Do not mint those again.
 
 ## Rules that do not move
 
 - Testnet-10 only. Do not use a mainnet RPC, a mainnet address, or a mainnet key.
-- Submit through a testnet-10 node this runner already uses. Do not start kaspad. Do not retarget a miner. Do not fund keel. Do not touch the storm wallets for this mint.
-- Pay from the Grok Bot testnet-10 wallet this runner already uses. The public address ends in `0v0ldx`. Do not spend the Grok Build wallet. Do not spend the sixpack guest pool. Do not spend the discarded 7 Oct key. You do not have it.
+- Pay from the Grok Bot testnet-10 wallet this runner already uses. The public address ends in `0v0ldx`. That is your only mint wallet. Do not spend the Grok Build wallet. Do not spend the sixpack guest pool. Do not spend the discarded 7 Oct key. You do not have it.
+- Your mint budget is 1,000,000 tKAS on that wallet. Build's mint budget is 1,000,000 tKAS on the Build wallet. Build's even half is already inside its budget. Stop before the next carrier and fee would push your own mint spend over 1,000,000 tKAS.
+- Do not send more than 1,000,000 tKAS to any one address. The token carrier is 1 KAS. Do not add tKAS to a recipient.
+- Submit through a testnet-10 node this runner already uses. If that node cannot take the mint, use keel. On this desk, keel's Borsh socket is `ws://127.0.0.1:17310` and its gRPC port is `16310`. From the bot box, use the keel tunnel this runner already has. Do not point the bot box at desk locus `127.0.0.1:16210` or `127.0.0.1:17210`. Do not start kaspad. Do not stop kaspad. Do not retarget a miner. Do not fund keel. Do not open a new tunnel. Do not touch the storm.
 - Do not comment on kaspanet/kccs, argent-lang/kcc20-reference, Manyfestation/kcc20-reference, or any other upstream repository. Do not open a pull request on them.
 - The code you compile is argent-lang/kcc20-reference commit `c8a08711`, app `KCC20PublicMint`. The text you follow is kaspanet/kccs `3fbec524`, file `kcc-0020.md`, status Last Call. Do not use kcc20-live, KaspaKaha, or the SilverScript four-field minter.
 - If you cannot build a real covenant transaction, stop and write that in `map/bot/FINDINGS.md`. Do not write a square-ledger line, a KRC-20 inscription, or a note in place of the mint.

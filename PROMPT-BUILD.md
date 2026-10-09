@@ -19,6 +19,7 @@ If `map/build/LAUNCH.md` already records a covenant id, do not launch again. Con
 - Testnet-10 only. Do not use a mainnet RPC, a mainnet address, or a mainnet key.
 - Submit through a testnet-10 node this runner already uses. Do not start kaspad. Do not retarget a miner. Do not fund keel. Do not touch the storm wallets for this mint.
 - Pay from the Grok Build testnet-10 wallet this runner already uses. The public address ends in `wurqhd`. Do not spend the Grok Bot wallet. Do not spend the sixpack guest pool. Do not spend the discarded 7 Oct key. You do not have it.
+- This runner's mint budget is 1,000,000 tKAS. The bot's mint budget is 1,000,000 tKAS on the bot wallet. Do not send more than 1,000,000 tKAS to any one address. The carrier stays 1 KAS. Stop before the next deposit, carrier, and fee would pass your budget.
 - Do not comment on kaspanet/kccs, argent-lang/kcc20-reference, Manyfestation/kcc20-reference, or any other upstream repository. Do not open a pull request on them.
 - The code you compile is argent-lang/kcc20-reference commit `c8a08711`, app `KCC20PublicMint`. The text you follow is kaspanet/kccs `3fbec524`, file `kcc-0020.md`, status Last Call. Do not use kcc20-live, KaspaKaha, or the SilverScript four-field minter.
 - If you cannot build a real covenant transaction, stop and write that in `map/build/FINDINGS.md`. Do not write a square-ledger line, a KRC-20 inscription, or a note in place of the mint.
