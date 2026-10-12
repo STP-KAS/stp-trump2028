@@ -43,4 +43,4 @@ Stop reason: the even half was accepted, the odd half is Bot's, and the spend is
 
 `leaves.json` lists all 5,000 leaves. Even indexes have remaining 0. Odd indexes have remaining 4,056. `depositAddress` is the deposit owner, not the token holder. The token holder of an even leaf is the address in `mints.json`.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

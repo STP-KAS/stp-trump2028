@@ -6,4 +6,4 @@ The odd-leaf builder is in this folder. `odds.rs` is the `odds` mode for argent-
 
 On 2026-10-09 the same mode minted indexes 1 through 23, twelve leaves, one every 3 seconds. The local testnet-10 node accepted all twelve. Commands are in [README.md](README.md).
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

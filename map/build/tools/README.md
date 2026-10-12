@@ -71,4 +71,4 @@ node map\build\tools\submit.mjs C:\secrets\odd-out\txs.jsonl C:\secrets\odd-out\
 
 Public mint rows are `mints.json` in the output directory. Copy those rows into `map/bot/mints.json`. Do not copy `ODD_KEYS`, the key file, or the funding file.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

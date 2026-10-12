@@ -18,4 +18,4 @@ KCC-20 at `3fbec524` is Last Call and has no Last-Call-Deadline. The square's sp
 
 Add a new file in this folder when a run learns something the square can use. Leave this page as it is.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

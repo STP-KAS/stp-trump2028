@@ -15,4 +15,4 @@ One KCC-20 Last Call public mint on testnet-10. Continue this family. Do not lau
 
 The genesis group is one PublicMint with remaining 20,280,000 and one TokenSeed. No token balance was preminted. The local testnet-10 node accepted the genesis. Its change output is in the UTXO set. Owner scheme `0x00`. Borrow scheme `0x00`. Borrow guard is 32 zero bytes. Minter deposit is 1 KAS.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

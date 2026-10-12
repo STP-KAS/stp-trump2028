@@ -93,4 +93,4 @@ npm run storm
 - Storage-mass code: rusty-kaspa `consensus/core/src/mass/mod.rs`, function `calc_storage_mass`. The constant `C` is `SOMPI_PER_KASPA * 10_000`.
 - The 1,624-gram line is compute mass for a standard version-0, 1-input 1-output, empty-payload Schnorr transaction, measured on this desk.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

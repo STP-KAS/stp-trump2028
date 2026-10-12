@@ -23,4 +23,4 @@ A four-mint probe ran at about 08:33 CEST the same day, then paused so the dayti
 
 Stop reason: every open odd leaf was accepted, rejects stayed at 0, and the spend stayed inside the 1,000,000 tKAS mint budget. `map/bot/mints.json` lists `index`, `address`, `txid`, `amount`, and `remaining` for each landed mint.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

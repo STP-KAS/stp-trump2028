@@ -31,4 +31,4 @@ Write a new file. Do not rewrite this page. Do not put a private key, a seed phr
 
 The paste that starts a runner is [PROMPT-BUILD.md](../PROMPT-BUILD.md) or [PROMPT-BOT.md](../PROMPT-BOT.md). This map is not a storm start.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

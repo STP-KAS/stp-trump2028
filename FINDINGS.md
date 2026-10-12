@@ -38,4 +38,4 @@ KCC-0 says a Last Call header carries a Last-Call-Deadline. The `3fbec524` heade
 
 No second program was written for the old box. A P2SH authority index of 255 on a short transaction is not run. A KCC20 input with a negative amount is not run. The 5,000-address mint is not submitted. The 150-caller swarm was not submitted.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

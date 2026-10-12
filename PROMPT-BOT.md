@@ -60,4 +60,4 @@ A reject of one leaf is a row in FINDINGS. Read the leaf's current outpoint befo
 
 The square mint on sixpack is a ledger book, not this covenant. If a result would change how that page should list holders, fees, or borrow, add `map/1984/` plus a new markdown file named with the date and `bot`. The existing note is `map/1984/README.md`.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.

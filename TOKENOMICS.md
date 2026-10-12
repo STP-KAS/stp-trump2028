@@ -39,4 +39,4 @@ A limit of 1 on the same supply is still the long counterfactual: about 281.67 h
 
 The earlier family is a different token. Path `launch::stp-trump2028`, covenant id `9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8`, limit 135,200, one accepted mint, key discarded. Leave it.
 
-Intentions are good; thought process is questionable. STP remains delusional. Si vis pacem, para bellum.
+Si vis pacem, para bellum.
