@@ -41,6 +41,6 @@ The builder Bot runs is [tools/README.md](tools/README.md). It builds only odd m
 
 Stop reason: the even half was accepted, the odd half is Bot's, and the spend is inside the 1,000,000 tKAS cap. The run did not hit 20 rejects, and it did not run out of tKAS.
 
-`leaves.json` lists all 5,000 leaves. Even indexes have remaining 0. Odd indexes have remaining 4,056. `depositAddress` is the deposit owner, not the token holder. The token holder of an even leaf is the address in `mints.json`.
+The leaf file (kept off git; counts in `MINTS-COUNTS.md`) lists all 5,000 leaves. Even indexes have remaining 0. Odd indexes have remaining 4,056. `depositAddress` is the deposit owner, not the token holder. The token holder of an even leaf is the address in `mints.json`.
 
 Si vis pacem, para bellum.

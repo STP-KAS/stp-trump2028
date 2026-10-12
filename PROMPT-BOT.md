@@ -10,7 +10,7 @@ Finish the odd half of the KCC-20 public mint that Grok Build already launched o
 
 ## What you own
 
-Grok Build launched, split, and minted the even leaf indexes. You mint the odd leaf indexes from `map/build/leaves.json`: 1, 3, 5, and so on. You mint them into the same covenant. You do not wait for a second launch.
+Grok Build launched, split, and minted the even leaf indexes. You mint the odd leaf indexes from the leaf file (kept off git; ask stp for the local copy): 1, 3, 5, and so on. You mint them into the same covenant. You do not wait for a second launch.
 
 The family in `map/build/LAUNCH.md` is covenant `89997c2e03251a4abd22263bf2ac3a11394c9729a32a8520789c60ce2d6f9d67`, genesis `22613489e01b0bc1447491850513dbfd2381d5a60390ffdee4ecd644161efcc2`. If that file names another covenant id, stop. Do not launch.
 
@@ -18,7 +18,7 @@ If `map/build/LAUNCH.md` is not on the branch, write `map/bot/WAITING.md` with t
 
 An odd leaf can be minted when its outpoint is in a block or already in the mempool. The split chain is serial. If the node does not know that outpoint yet, skip the leaf and come back. Do not split a new tree.
 
-If Build has already minted an odd leaf, skip it. `map/build/odds.json` records indexes 1 through 23. `leaves.json` shows those remaining values as 0. Leave every even index. The builder you run is [map/build/tools/README.md](map/build/tools/README.md). It does not launch, split, or reclaim.
+If Build has already minted an odd leaf, skip it. Build's odd mints were indexes 1 through 23 ([counts](map/build/MINTS-COUNTS.md)). The leaf file shows those remaining values as 0. Leave every even index. The builder you run is [map/build/tools/README.md](map/build/tools/README.md). It does not launch, split, or reclaim.
 
 ## Rules that do not move
 

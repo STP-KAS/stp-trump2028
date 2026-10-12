@@ -13,8 +13,8 @@ Runners write what they saw under their own folder. They do not edit each other'
 ## Files Build publishes
 
 - `build/LAUNCH.md` once. Covenant id, genesis txid, launch path, extension hex, supply, per-mint limit, seed outpoint, first minter outpoint. Public data only.
-- `build/leaves.json` once the split tree is on chain. One object per leaf: `index`, `outpoint`, `remaining`, `depositAddress`. Even indexes belong to Build. Odd indexes belong to Bot.
-- `build/mints.json` for the leaves Build minted.
+- Leaf rows (`leaves.json`) stay off git; counts in `build/MINTS-COUNTS.md`. Even indexes belong to Build, odd indexes to Bot.
+- `build/MINTS-COUNTS.md`: counts for the leaves and mints (rows kept off git).
 - `build/FINDINGS.md` for mass, fees, rejects, and anything that surprised the runner.
 
 ## Files Bot publishes

@@ -4,7 +4,7 @@
 
 Builds and submits odd-index mints for the family already launched in `map/build/LAUNCH.md`. It does not build a genesis, a split, or a reclaim.
 
-Covenant `89997c2e03251a4abd22263bf2ac3a11394c9729a32a8520789c60ce2d6f9d67`. Path `launch::stp-trump2028-last-call`. Each open odd leaf mints 4,056 to a new local key. Owner scheme `0x00`. Borrow scheme `0x00`. Borrow guard is 32 zero bytes. The payer pays the 1 KAS carrier and the fee. The deposit owner stays the address already written on the leaf.
+Covenant `[id removed]`. Path `launch::stp-trump2028-last-call`. Each open odd leaf mints 4,056 to a new local key. Owner scheme `0x00`. Borrow scheme `0x00`. Borrow guard is 32 zero bytes. The payer pays the 1 KAS carrier and the fee. The deposit owner stays the address already written on the leaf.
 
 The code you compile is argent-lang/kcc20-reference commit `c8a087117735a1f87c5c6d115fcddeaf2562c784`, app `KCC20PublicMint`. Do not push that checkout.
 
@@ -50,8 +50,8 @@ node map\build\tools\fund.mjs
 
 $env:ODD_OUT = "C:\secrets\odd-out"
 $env:ODD_KEYS = "C:\secrets\odd-recipients.secret"
-$env:ODD_LEAVES = "map\build\leaves.json"
-$env:ODD_DEPOSIT_ADDRESS = "kaspatest:qp4jge54eztxewf8r53rtjdvxakmatsu6tjd0nn9sjhgvzxknsfvjvmwurqhd"
+$env:ODD_LEAVES = "<local copy of leaves.json, kept off git>"
+$env:ODD_DEPOSIT_ADDRESS = "`[address removed]`"
 $env:ODD_FEE_RATE = "100"
 $env:ODD_LIMIT = "12"
 .\target\release\kcc20.exe odds

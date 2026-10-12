@@ -51,20 +51,20 @@ Sent once, on 7 Oct 2026, to the local testnet-10 node only. The node was rusty-
 The local faucet returned HTTP 429 and no coins. No existing wallet was spent. One coinbase from a block found on that same node paid a new testnet address. After it matured, genesis spent output index 1.
 
 ```text
-coinbase bab89fcacc78d64d18f1903fad17d7ca7fed2f29676c32d2803f7077463dbe11
+coinbase `[id removed]`
 amount 706277464
-address kaspatest:qp7x6aaf0ph8cjx9jaq5k27llapww797j0lzn3u3e2kqqepl4nw45jye4ad3t
+address `[address removed]`
 ```
 
-Genesis `44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056` was included in chain block `9ab38a7e011f58b30620b9087519d9ad1a427766cb58608fd46e680675984472` at 2026-10-07T15:36:25.967Z and accepted by chain block `dac4e684b1a35ab20960e07e06ed8d83b3a1e02ef23232eeedc2a43dbbf5ea8c`.
+Genesis `[id removed]` was included in chain block `[id removed]` at 2026-10-07T15:36:25.967Z and accepted by chain block `[id removed]`.
 
-Mint `1fd8391dacb6757f4df5f5a59ce60788c39d423f6613ae4a2f51602471e63ecc` took one lot of 135,200. It was included in block `883e9b5ba0e55007fed75198e8c834807cdd20313ac4671c3194a7c914723a3b` at 2026-10-07T15:36:26.323Z and accepted by chain block `1bb014758974b82fe7fb0bb97f117e8f52580d16e12d481c1482e267dcc521bd`.
+Mint `[id removed]` took one lot of 135,200. It was included in block `[id removed]` at 2026-10-07T15:36:26.323Z and accepted by chain block `[id removed]`.
 
-The second mint `f6979e31e11895d164750513484eabde3a9b4da7009e2d9d64c1d59a2332b5aa` was rejected. The node said output `(44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056, 0)` was already spent by the first mint in the mempool. It was not retried. It is not in a block.
+The second mint `[id removed]` was rejected. The node said output `(`[id removed]`, 0)` was already spent by the first mint in the mempool. It was not retried. It is not in a block.
 
 A later virtual-chain read from the parent of the genesis block listed both accepted ids and removed no blocks. Neither transaction was still in the mempool.
 
-A second read, with the virtual DAA score at 590,565,584, still found those blocks. The mint's accepting block remains a chain block. The stored mint is version 1, storage mass 17,520, compute mass 8,706, sigop count 0 on both inputs. Its covenant script contains the extension, the supply 20,280,000, and the lot 135,200. Both covenant outputs share covenant id `9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8`. Fee, mass, and output values are in [LIVE.md](LIVE.md).
+A second read, with the virtual DAA score at 590,565,584, still found those blocks. The mint's accepting block remains a chain block. The stored mint is version 1, storage mass 17,520, compute mass 8,706, sigop count 0 on both inputs. Its covenant script contains the extension, the supply 20,280,000, and the lot 135,200. Both covenant outputs share covenant id `[id removed]`. Fee, mass, and output values are in [LIVE.md](LIVE.md).
 
 ## 4. How the node orders fee ratios
 

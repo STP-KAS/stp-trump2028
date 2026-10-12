@@ -45,8 +45,7 @@ Generate the keys on this machine. Keep them outside the repository. `keys/`, `s
 Commit only under `map/build/` and, when you learn something the square can use, a new file under `map/1984/`. Do not edit `map/1984/README.md`. Do not edit `map/bot/`.
 
 - `map/build/LAUNCH.md` with the covenant id, genesis txid, launch path, extension, supply, per-mint limit, seed outpoint, and first minter outpoint.
-- `map/build/leaves.json` with one object per leaf: `index`, `outpoint`, `remaining`, `depositAddress`.
-- `map/build/mints.json` with `index`, `address`, `txid`, `amount`, `remaining` for each mint you land.
+- `map/build/MINTS-COUNTS.md` with counts only (leaves, remaining per parity, mints landed, tokens). Leaf rows, outpoints, addresses and txids stay on the desk, never in git.
 - `map/build/FINDINGS.md` with compute mass, storage mass, fee paid, rejects, and the stop reason.
 
 Pull, rebase, and push to `origin/main`. Author the commit as STP-KAS with `227352643+STP-KAS@users.noreply.github.com`. One sentence. Do not force-push. If the wallet cannot cover the next deposit, carrier, and fee, stop and write the balances you are willing to show. Public addresses and amounts are fine. Keys are not.

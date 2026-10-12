@@ -13,10 +13,10 @@ This page is the 7 Oct 2026 submit. It used path `launch::stp-trump2028`, a per-
 The local faucet answered HTTP 429 and sent nothing. No existing wallet was spent. The same local node returned one block template. One block was found and the node accepted that block. Its coinbase output paid a new testnet address and was left until mature.
 
 ```text
-coinbase bab89fcacc78d64d18f1903fad17d7ca7fed2f29676c32d2803f7077463dbe11
+coinbase `[id removed]`
 index 1
 amount 706277464
-address kaspatest:qp7x6aaf0ph8cjx9jaq5k27llapww797j0lzn3u3e2kqqepl4nw45jye4ad3t
+address `[address removed]`
 ```
 
 That is 7.06277464 tKAS. The signing key for this address was discarded after the submit. This page cannot move the outputs.
@@ -26,7 +26,7 @@ That is 7.06277464 tKAS. The signing key for this address was discarded after th
 Version 1. Path `launch::stp-trump2028`. Name `stp trump2028`. Extension, unkeyed BLAKE3 of that name:
 
 ```text
-379d7a15ef3efe6104cb58d99e0633c95d54f679914cbbffcba99230dbdb5706
+`[id removed]`
 ```
 
 Allowance 20,280,000. Per-mint limit 135,200. The mint took one lot of 135,200. Remaining allowance on the new minter is 20,144,800. The other 149 lots were not built for the node.
@@ -52,29 +52,29 @@ The token output is about 5.19 tKAS, not the thin 0.2 KAS row in the model. That
 Genesis and the mint were accepted into the mempool. The conflict was rejected and was not retried:
 
 ```text
-Rejected transaction f6979e31e11895d164750513484eabde3a9b4da7009e2d9d64c1d59a2332b5aa: output (44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056, 0) already spent by transaction 1fd8391dacb6757f4df5f5a59ce60788c39d423f6613ae4a2f51602471e63ecc in the mempool
+Rejected transaction `[id removed]`: output (`[id removed]`, 0) already spent by transaction `[id removed]` in the mempool
 ```
 
 A later read found both accepted transactions in blocks. Times are the block header timestamps, UTC.
 
 ```text
-genesis 44d89244a096961278c5569aff71ab2e94ec272d857b440434b8446ec5812056
-included 9ab38a7e011f58b30620b9087519d9ad1a427766cb58608fd46e680675984472
+genesis `[id removed]`
+included `[id removed]`
 included-daa 590545172
 included-time 2026-10-07T15:36:25.967Z
 included-chain yes
 included-txs 213
-accepted-by dac4e684b1a35ab20960e07e06ed8d83b3a1e02ef23232eeedc2a43dbbf5ea8c
+accepted-by `[id removed]`
 accepted-daa 590545175
 accepted-time 2026-10-07T15:36:26.125Z
 
-mint 1fd8391dacb6757f4df5f5a59ce60788c39d423f6613ae4a2f51602471e63ecc
-included 883e9b5ba0e55007fed75198e8c834807cdd20313ac4671c3194a7c914723a3b
+mint `[id removed]`
+included `[id removed]`
 included-daa 590545176
 included-time 2026-10-07T15:36:26.323Z
 included-chain no
 included-txs 827
-accepted-by 1bb014758974b82fe7fb0bb97f117e8f52580d16e12d481c1482e267dcc521bd
+accepted-by `[id removed]`
 accepted-daa 590545177
 accepted-time 2026-10-07T15:36:26.500Z
 ```
@@ -101,14 +101,14 @@ That 6,024-byte script contains the extension commitment. Further along, the byt
 Both mint outputs are script-hash outputs and carry the same covenant id, bound to authorizing input 0. Genesis output 0 carries that same id. Genesis output 1 has no covenant. The id is:
 
 ```text
-9631239207025d6ec0cfc59095bc345f20a9de63967db2ea0f60af826c0798e8
+`[id removed]`
 ```
 
 The script-hash addresses on the mint are:
 
 ```text
-minter kaspatest:ppj0qkpzclyr8janwc6lc2xh90gl6vse2xya9kkjw2cx99sufrywvzpd5lscm
-token kaspatest:pr6dylvay08cwwkdnwfxk34dlzz5l8fjsrkp0afjgqauq2eef4mu7p0y8nw72
+minter `[address removed]`
+token `[address removed]`
 ```
 
 The RPC script-public-key field on each of those outputs is 37 bytes. The pay-to-script-hash template in the model is 35 bytes. The node labels the type ScriptHash.
