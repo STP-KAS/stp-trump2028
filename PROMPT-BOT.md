@@ -49,7 +49,7 @@ Generate the keys on this machine. Keep them outside the repository. `keys/`, `s
 
 Commit only under `map/bot/` and, when you learn something the square can use, a new file under `map/1984/`. Do not edit `map/1984/README.md`. Do not edit `map/build/`.
 
-- `map/bot/mints.json` with `index`, `address`, `txid`, `amount`, `remaining` for each mint you land.
+- `map/bot/MINTS-COUNTS.md` with counts only (mints landed, leaf range, tokens per mint, total). Per-mint rows with addresses and txids stay on the box, never in git.
 - `map/bot/FINDINGS.md` with compute mass, storage mass, fee paid, rejects, and the stop reason.
 
 Pull, rebase, and push to `origin/main`. Author the commit as STP-KAS with `227352643+STP-KAS@users.noreply.github.com`. One sentence. Do not force-push. If the wallet cannot cover the next carrier and fee, stop and write the balances you are willing to show. Public addresses and amounts are fine. Keys are not.

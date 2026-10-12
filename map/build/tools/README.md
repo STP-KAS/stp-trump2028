@@ -69,6 +69,6 @@ $env:ODD_SLOW_MS = "3000"
 node map\build\tools\submit.mjs C:\secrets\odd-out\txs.jsonl C:\secrets\odd-out\landed.jsonl
 ```
 
-Public mint rows are `mints.json` in the output directory. Copy those rows into `map/bot/mints.json`. Do not copy `ODD_KEYS`, the key file, or the funding file.
+Public mint rows are `mints.json` in the output directory. Keep those rows on the box; put counts only in `map/bot/MINTS-COUNTS.md`. Do not copy `ODD_KEYS`, the key file, or the funding file.
 
 Si vis pacem, para bellum.

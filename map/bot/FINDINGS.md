@@ -21,6 +21,6 @@ A four-mint probe ran at about 08:33 CEST the same day, then paused so the dayti
 
 ## Stop
 
-Stop reason: every open odd leaf was accepted, rejects stayed at 0, and the spend stayed inside the 1,000,000 tKAS mint budget. `map/bot/mints.json` lists `index`, `address`, `txid`, `amount`, and `remaining` for each landed mint.
+Stop reason: every open odd leaf was accepted, rejects stayed at 0, and the spend stayed inside the 1,000,000 tKAS mint budget. `map/bot/MINTS-COUNTS.md` has the counts; per-mint rows (addresses, txids) stay on the box.
 
 Si vis pacem, para bellum.

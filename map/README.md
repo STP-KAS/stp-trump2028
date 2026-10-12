@@ -20,7 +20,7 @@ Runners write what they saw under their own folder. They do not edit each other'
 ## Files Bot publishes
 
 - `bot/WAITING.md` only when `build/LAUNCH.md` is not on this branch yet. Then stop.
-- `bot/mints.json` for the odd leaves Bot minted.
+- `bot/MINTS-COUNTS.md` for the odd leaves Bot minted (counts only; per-mint rows stay on the box).
 - `bot/FINDINGS.md` for the same kind of notes.
 
 A finished supply is every leaf at remaining 0, with 5,000 recipient addresses in the two mint files, each holding 4,056.
